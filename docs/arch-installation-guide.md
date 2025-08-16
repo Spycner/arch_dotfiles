@@ -287,6 +287,10 @@ EDITOR=nano visudo
 
 ## Essential Package Installation
 
+```bash
+chsh -s $(which zsh)
+```
+
 ### 1. Install AUR Helper (yay)
 ```bash
 # Switch to user account first
@@ -304,7 +308,8 @@ paru -S hyprland-meta-git \
   firefox \
   github-cli \
   cpio \ # for creating cpio archives
-  uwsm # wayland session manager
+  uwsm \ # wayland session manager
+  openssh
 ```
 
 ```bash
@@ -312,6 +317,14 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
 ```
 ```bash
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash
+
+echo 'export NVM_DIR="$HOME/.nvm"' >> .zshrc
+echo '[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"' >> .zshrc
+echo '[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"' >> .zshrc
+
+source ~/.zshrc
+
+nvm install node
 ```
 
 ---
@@ -337,6 +350,18 @@ nmcli device wifi connect "SSID" password "password"
 # Update system
 sudo pacman -Syu
 ```
+
+### 3. Install CC
+```bash
+npm install -g @anthropic-ai/claude-code
+```
+
+### Setup GH and clone the repo
+```bash
+gh auth login
+gh repo clone https://github.com/Spycner/arch_dotfiles.git
+```
+
 
 ### 3. Configure Zsh (if installed)
 ```bash
