@@ -20,7 +20,21 @@
       "Bash(journalctl:*)",
       "Bash(setxkbmap:*)",
       "Bash(rm:*)",
-      "Bash(cp:*)"
+      "Bash(cp:*)",
+      "mcp__task-master-ai__parse_prd",
+      "mcp__task-master-ai__models",
+      "Bash(task-master parse-prd:*)",
+      "Bash(task-master list:*)",
+      "mcp__task-master-ai__get_tasks",
+      "mcp__task-master-ai__analyze_project_complexity",
+      "mcp__task-master-ai__get_task",
+      "mcp__task-master-ai__expand_task",
+      "mcp__task-master-ai__add_subtask",
+      "Bash(task-master analyze-complexity:*)",
+      "Bash(task-master:*)",
+      "mcp__task-master-ai__next_task",
+      "mcp__task-master-ai__set_task_status",
+      "mcp__task-master-ai__update_task"
     ],
     "additionalDirectories": [
       "/home/pkraus/.config/hypr"
