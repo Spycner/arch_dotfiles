@@ -1,3 +1,34 @@
 {
+  "permissions": {
+    "allow": [
+      "Bash(chmod:*)",
+      "Bash(mkdir:*)",
+      "Bash(mv:*)",
+      "Bash(uv run:*)",
+      "Bash(localectl:*)",
+      "WebSearch",
+      "Bash(hyprctl:*)",
+      "Bash(/home/pkraus/Code/arch_dotfiles/scripts/setup-input.sh:*)",
+      "Bash(/home/pkraus/Code/arch_dotfiles/scripts/install-cli-tools.sh:*)",
+      "Bash(paru:*)",
+      "Bash(ln:*)",
+      "Bash(/home/pkraus/Code/arch_dotfiles/scripts/utils/layout-switcher.sh status:*)",
+      "Bash(/home/pkraus/Code/arch_dotfiles/scripts/utils/keyboard-detector.sh:*)",
+      "Bash(grep:*)",
+      "Bash(/home/pkraus/Code/arch_dotfiles/scripts/utils/layout-tester.sh:*)",
+      "Bash(/home/pkraus/Code/arch_dotfiles/scripts/utils/layout-switcher.sh:*)",
+      "Bash(journalctl:*)",
+      "Bash(setxkbmap:*)",
+      "Bash(rm:*)",
+      "Bash(cp:*)"
+    ],
+    "additionalDirectories": [
+      "/home/pkraus/.config/hypr"
+    ]
+  },
+  "enableAllProjectMcpServers": true,
+  "enabledMcpjsonServers": [
+    "task-master-ai"
+  ],
   "outputStyle": "Explanatory"
 }
