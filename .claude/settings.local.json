@@ -34,10 +34,12 @@
       "Bash(task-master:*)",
       "mcp__task-master-ai__next_task",
       "mcp__task-master-ai__set_task_status",
-      "mcp__task-master-ai__update_task"
+      "mcp__task-master-ai__update_task",
+      "WebFetch(domain:docs.anthropic.com)"
     ],
     "additionalDirectories": [
-      "/home/pkraus/.config/hypr"
+      "/home/pkraus/.config/hypr",
+      "/home/pkraus/.claude"
     ]
   },
   "enableAllProjectMcpServers": true,

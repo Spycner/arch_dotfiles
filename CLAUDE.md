@@ -12,6 +12,9 @@ This is an Arch Linux dotfiles repository designed to automate system configurat
 arch_dotfiles/
 ├── README.md                          # Main project documentation
 ├── CLAUDE.md                          # This file
+├── .claude/                           # Claude Code configuration
+│   ├── agents/                        # Project-specific AI agents
+│   └── commands/                      # Project-specific slash commands
 ├── docs/
 │   └── arch-installation-guide.md     # Comprehensive Arch Linux installation guide
 ├── config/
@@ -26,11 +29,12 @@ arch_dotfiles/
 │           └── reload-config.sh       # Config reload helper
 ├── scripts/
 │   ├── setup_hyprland.py             # Hyprland setup with backup/rollback
+│   ├── setup-claude.py               # Claude Code configuration setup
 │   ├── setup-theming.py              # Theming packages installer
 │   ├── setup-rosepine.py             # Rosé Pine theme configuration
 │   ├── setup-utils.py                # Utilities setup script
 │   ├── setup-input.sh                # Input configuration script
-│   ├── install-cli-tools.sh          # CLI tools installer
+│   ├── install-cli-tools.py          # CLI tools installer
 │   ├── utils/                        # Utility scripts
 │   │   ├── layout-switcher.sh        # Keyboard layout toggle (US/DE)
 │   │   └── README.md                 # Utils documentation
@@ -112,6 +116,37 @@ task-master set-status --id=<id> --status=done
 task-master expand --id=<id> --research
 ```
 
+### Claude Code Configuration
+
+```bash
+# Setup Claude Code agents and commands (idempotent, creates backups)
+uv run scripts/setup-claude.py
+
+# Preview changes without applying
+uv run scripts/setup-claude.py --dry-run
+
+# Check current status of Claude configuration
+uv run scripts/setup-claude.py --status
+
+# Rollback Claude configuration setup
+uv run scripts/setup-claude.py --rollback
+
+# Add a new project agent
+echo "---
+name: \"arch-expert\"
+description: \"Specializes in Arch Linux configuration\"
+tools: [\"Read\", \"Edit\", \"Bash\"]
+---
+
+You are an Arch Linux expert. Help with system configuration, package management, and troubleshooting." > .claude/agents/arch-expert.md
+
+# Add a new project command
+echo "Review the Hyprland configuration in @config/hypr/hyprland.conf and suggest optimizations" > .claude/commands/review-hypr.md
+
+# List available agents and commands
+claude --help
+```
+
 ## Implemented Features
 
 ### Hyprland Window Manager
@@ -141,6 +176,13 @@ task-master expand --id=<id> --research
 - **Font packages**: Comprehensive font collection including Nerd Fonts, Roboto, Fira Code
 - **Environment template**: Auto-generates env.conf template for Hyprland theme variables
 
+### Claude Code Configuration
+- **Project-specific agents**: Version-controlled AI agents in `.claude/agents/` for team sharing at .claude/agents/README.md
+- **Custom slash commands**: Project-specific commands in `.claude/commands/` for frequently-used prompts at .claude/commands/README.md
+- **Symlink management**: Automated setup script creates symlinks from `~/.claude/` to project directories at scripts/setup-claude.py:1-582
+- **Backup and rollback**: Full backup support with timestamped state tracking
+- **Team collaboration**: Share Claude configurations with version control while maintaining user-level compatibility
+
 ## Expected Future Additions
 
 - **Shell configurations**: `.zshrc`, `.bashrc`, shell aliases and functions
@@ -163,6 +205,12 @@ hyprctl reload 2>&1 | grep -q "error" && echo "Config has errors" || echo "Confi
 
 # Check Task Master configuration
 task-master models  # Shows configured AI models and API key status
+
+# Test Claude Code setup without making changes
+uv run scripts/setup-claude.py --dry-run
+
+# Check Claude configuration status
+uv run scripts/setup-claude.py --status
 ```
 
 ### Python Script Linting
