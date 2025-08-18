@@ -4,28 +4,176 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Repository Overview
 
-This is an Arch Linux dotfiles repository designed to automate system configuration and setup. The repository includes comprehensive documentation for Arch Linux installation and will house configuration files for various system components.
+This is an Arch Linux dotfiles repository designed to automate system configuration and setup. The repository includes comprehensive documentation for Arch Linux installation and configuration files for Hyprland window manager and various system components.
 
 ## Project Structure
 
 ```
 arch_dotfiles/
-├── README.md                      # Main project documentation
+├── README.md                          # Main project documentation
+├── CLAUDE.md                          # This file
 ├── docs/
-│   └── arch-installation-guide.md # Comprehensive Arch Linux installation guide
-└── CLAUDE.md                      # This file
+│   └── arch-installation-guide.md     # Comprehensive Arch Linux installation guide
+├── config/
+│   └── hypr/                          # Hyprland window manager configuration
+│       ├── hyprland.conf              # Main Hyprland config
+│       ├── conf.d/                    # Modular configuration files
+│       │   ├── input.conf             # Input device settings
+│       │   ├── keybinds.conf         # Keyboard shortcuts
+│       │   ├── appearance.conf       # Visual settings
+│       │   └── windowrules.conf      # Window management rules
+│       └── scripts/                   # Hyprland utility scripts
+│           └── reload-config.sh       # Config reload helper
+├── scripts/
+│   ├── setup_hyprland.py             # Hyprland setup with backup/rollback
+│   ├── setup-theming.py              # Theming packages installer
+│   ├── setup-rosepine.py             # Rosé Pine theme configuration
+│   ├── setup-utils.py                # Utilities setup script
+│   ├── setup-input.sh                # Input configuration script
+│   ├── install-cli-tools.sh          # CLI tools installer
+│   ├── utils/                        # Utility scripts
+│   │   ├── layout-switcher.sh        # Keyboard layout toggle (US/DE)
+│   │   └── README.md                 # Utils documentation
+│   └── optional-installs/            # Optional component installers
+│       └── task-master/               # Task Master AI setup
+└── .taskmaster/                       # Task Master AI configuration
+    ├── config.json                    # AI model configuration
+    ├── tasks/                         # Task files directory
+    └── CLAUDE.md                      # Task Master specific guidance
 ```
 
-## Expected Configuration Files
+## Common Commands
 
-As this repository develops, it will likely include:
+### Hyprland Setup and Management
+
+```bash
+# Setup Hyprland configuration (idempotent, creates backups)
+uv run scripts/setup_hyprland.py
+
+# Preview changes without applying
+uv run scripts/setup_hyprland.py --dry-run
+
+# Rollback to previous configuration
+uv run scripts/setup_hyprland.py --rollback
+
+# Reload Hyprland configuration
+hyprctl reload
+
+# Toggle keyboard layout (US International ↔ German QWERTZ)
+./scripts/utils/layout-switcher.sh
+
+# Check current keyboard layout
+./scripts/utils/layout-switcher.sh --status
+```
+
+### Theming Setup
+
+```bash
+# Install all theming packages and tools
+uv run scripts/setup-theming.py
+
+# Install only essential theming tools (no themes)
+uv run scripts/setup-theming.py --minimal
+
+# Skip AUR packages, only official repos
+uv run scripts/setup-theming.py --skip-aur
+
+# Preview what would be installed
+uv run scripts/setup-theming.py --dry-run
+
+# After installation, configure themes:
+nwg-look          # GTK settings for Wayland
+qt5ct             # Qt5 theme configuration
+kvantummanager    # Advanced Qt theming
+
+# Rosé Pine theme setup (complete configuration)
+uv run scripts/setup-rosepine.py              # Main variant (dark)
+uv run scripts/setup-rosepine.py --variant dawn  # Dawn variant (light)
+uv run scripts/setup-rosepine.py --variant moon  # Moon variant (darker)
+uv run scripts/setup-rosepine.py --rollback   # Revert to previous theme
+```
+
+### Task Master Workflow
+
+```bash
+# Parse PRD to generate tasks
+task-master parse-prd .taskmaster/docs/prd.txt
+
+# View all tasks
+task-master list
+
+# Get next task to work on
+task-master next
+
+# Mark task complete
+task-master set-status --id=<id> --status=done
+
+# Expand task into subtasks
+task-master expand --id=<id> --research
+```
+
+## Implemented Features
+
+### Hyprland Window Manager
+- **Complete configuration**: Modular config in `config/hypr/` with separate files for input, keybinds, appearance, and window rules
+- **Automated setup**: Python script with full backup and rollback support at scripts/setup_hyprland.py:39-317
+- **Symlink management**: Automatic creation of symlinks from repo to `~/.config/hypr/`
+- **State tracking**: JSON state file for rollback operations
+
+### Keyboard Layout Management
+- **Dual layout support**: US International and German QWERTZ switching via scripts/utils/layout-switcher.sh:1-281
+- **Hyprland integration**: Uses native Hyprland multi-layout feature to avoid errors
+- **State persistence**: Maintains layout state in `~/.local/share/arch_dotfiles/`
+- **Status bar support**: Provides simple US/DE output for waybar/polybar integration
+- **Hotkey binding**: Designed for Super+Shift+L keyboard shortcut
+
+### Task Master AI Integration
+- **Project management**: Full Task Master setup for tracking development tasks
+- **MCP server ready**: Configuration for Claude Code MCP integration
+- **Research capabilities**: Support for Perplexity AI-powered research
+- **Task workflows**: Commands for parsing PRDs, expanding tasks, and tracking progress
+
+### Theming Infrastructure
+- **Package installer**: Python script to install theming tools and popular themes at scripts/setup-theming.py
+- **Multi-toolkit support**: Installs tools for GTK (nwg-look, lxappearance), Qt (qt5ct, qt6ct), and Kvantum theming
+- **Theme collections**: Optional installation of popular themes (Nordic, Dracula, Catppuccin, Gruvbox, etc.)
+- **Icon and cursor themes**: Papirus, Numix, Bibata, and other popular icon/cursor sets
+- **Font packages**: Comprehensive font collection including Nerd Fonts, Roboto, Fira Code
+- **Environment template**: Auto-generates env.conf template for Hyprland theme variables
+
+## Expected Future Additions
 
 - **Shell configurations**: `.zshrc`, `.bashrc`, shell aliases and functions
-- **Window manager configs**: Hyprland configuration files (mentioned in installation guide)
-- **Terminal emulator configs**: kitty, ghostty configurations
+- **Terminal emulator config**: kitty configuration with GPU acceleration and image viewing  
 - **Package lists**: Lists of packages to install via pacman/paru
-- **Installation scripts**: Shell scripts to automate dotfile deployment
 - **System configurations**: Various `/etc/` configurations that need to be symlinked or copied
+
+## Testing and Validation Commands
+
+### Script Validation
+```bash
+# Test Hyprland setup without making changes
+uv run scripts/setup_hyprland.py --dry-run
+
+# Validate Hyprland configuration syntax
+hyprctl reload 2>&1 | grep -q "error" && echo "Config has errors" || echo "Config valid"
+
+# Test keyboard layout switcher
+./scripts/utils/layout-switcher.sh --status-detail
+
+# Check Task Master configuration
+task-master models  # Shows configured AI models and API key status
+```
+
+### Python Script Linting
+Since all user-facing scripts use `uv run`, ensure PEP 723 compliance:
+```bash
+# Check Python script has correct inline metadata
+grep -A5 "# /// script" scripts/setup_hyprland.py
+
+# Run script help to verify it works
+uv run scripts/setup_hyprland.py --help
+```
 
 ## Common Development Tasks
 
@@ -33,8 +181,9 @@ As this repository develops, it will likely include:
 
 When adding new dotfiles or configuration files:
 1. Place them in a logical directory structure (e.g., `config/hyprland/`, `shell/zsh/`)
-2. Consider creating a corresponding installation script or adding to an existing one
+2. Create a corresponding Python setup script using the `setup_hyprland.py` pattern
 3. Document any dependencies or special installation requirements
+4. Test with `--dry-run` flag before actual deployment
 
 ### Creating Installation Scripts
 
@@ -109,33 +258,54 @@ Based on the installation guide, this repository targets:
 
 - **Package Managers**: pacman (official), paru (AUR helper)
 - **Window Manager**: Hyprland (Wayland compositor)
-- **Terminal Emulators**: kitty, ghostty
+- **Terminal Emulator**: kitty (GPU-accelerated with image viewing support)
 - **Shell**: zsh (with potential oh-my-zsh integration)
 - **Session Manager**: uwsm (Wayland session manager)
 - **Development Tools**: git, github-cli, neovim
 
-## Architecture Considerations
+## Architecture Patterns
 
-### Dotfile Management Strategy
+### Script Implementation Pattern (Python)
+All Python scripts follow the pattern established in scripts/setup_hyprland.py:25-321:
+```python
+class SetupClass:
+    def __init__(self, repo_root: Path, dry_run: bool = False):
+        self.repo_root = repo_root
+        self.dry_run = dry_run
+        self.backup_dir = Path.home() / '.local' / 'share' / 'arch_dotfiles' / 'backups'
+        self.state_file = Path.home() / '.local' / 'share' / 'arch_dotfiles' / 'setup_state.json'
+        
+    def backup_existing_config(self) -> Dict[str, str]:
+        # Create timestamped backups
+        
+    def setup(self) -> bool:
+        # Main setup logic with validation
+        
+    def rollback(self) -> bool:
+        # Restore from backup using state file
+```
 
-When implementing dotfile management:
-1. Consider using GNU Stow for symlink management if the repository grows complex
-2. Keep user-specific settings separate from system-wide configurations
-3. Provide backup mechanisms before overwriting existing configurations
+### Symlink Management Strategy
+- **Source of truth**: Repository files in `config/` directory
+- **Target location**: User's `~/.config/` directory
+- **Linking method**: Python's `Path.symlink_to()` for atomic operations
+- **Backup strategy**: Timestamped copies before any modifications
+- **State tracking**: JSON file with setup metadata for reliable rollback
 
 ### Script Organization
 
-Organize scripts by function:
-- `install/` - Installation and setup scripts
-- `backup/` - Backup existing configurations  
-- `utils/` - Utility scripts for maintenance
+Current organization (implemented):
+- `scripts/` - Main setup scripts (Python for user-facing, bash for system hooks)
+- `scripts/utils/` - Utility scripts (keyboard layout switcher, etc.)
+- `scripts/optional-installs/` - Optional component installers
+- `config/` - Configuration files organized by application
 
-All scripts should follow a consistent pattern:
-1. Support `--help` flag for usage information
-2. Support `--dry-run` flag to preview changes without applying them
-3. Support `--rollback` flag to undo previous changes
-4. Maintain logs in `~/.local/share/arch_dotfiles/logs/`
-5. Store backups in `~/.local/share/arch_dotfiles/backups/`
+All scripts follow a consistent pattern:
+1. **Required flags**: `--help`, `--dry-run`, `--rollback`
+2. **State persistence**: JSON files in `~/.local/share/arch_dotfiles/`
+3. **Backup location**: `~/.local/share/arch_dotfiles/backups/` with timestamps
+4. **Idempotency**: Check existing state before making changes
+5. **Color output**: Consistent color scheme using ANSI codes
 
 ### Configuration File Structure
 
@@ -143,6 +313,7 @@ Follow XDG Base Directory Specification:
 - User configurations: `~/.config/`
 - User data: `~/.local/share/`
 - Cache: `~/.cache/`
+- State files: `~/.local/share/arch_dotfiles/`
 
 ## Important Notes
 

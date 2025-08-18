@@ -32,6 +32,7 @@ blue() { echo -e "\033[34m$*\033[0m"; }
 # Format: "package_name:description"
 PACKAGES=(
     "jq:JSON processor for parsing Hyprland device information"
+    "waybar-git:Highly customizable Wayland bar for Hyprland (git version for latest features)"
     # Add more packages here as needed:
     # "ripgrep:Fast text search tool"
     # "fd:Modern find replacement"
@@ -149,6 +150,15 @@ list_packages() {
 # Check package installation status
 check_package_status() {
     local package="$1"
+    
+    # Special case for waybar-git which installs as waybar
+    if [[ "$package" == "waybar-git" ]]; then
+        if command_exists "waybar"; then
+            return 0  # installed
+        else
+            return 1  # not installed
+        fi
+    fi
     
     if command_exists "$package"; then
         return 0  # installed

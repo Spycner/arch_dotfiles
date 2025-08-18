@@ -304,7 +304,6 @@ cd paru && makepkg -si
 ```bash
 paru -S hyprland-meta-git \
   kitty \
-  ghostty-git \
   firefox \
   github-cli \
   cpio \ # for creating cpio archives
