@@ -1,76 +1,88 @@
 ---
-allowed-tools: TodoWrite, Read, Write, mcp__task-master-ai__*
-description: Convert TodoWrite tasks into Task Master PRD when complexity grows
+allowed-tools: Read, Write, mcp__task-master-ai__*, LS, Glob
+description: Convert project task files into Task Master PRD when complexity warrants strategic management
 model: claude-opus-4-1
 ---
 
-# PRD Generation from Todo Tasks
+# PRD Generation from Project Task Files
 
-You are a specialist in transitioning from TodoWrite task management to Task Master AI project management when tasks grow in complexity.
+You are a specialist in transitioning from project task file management to Task Master AI strategic project management when task complexity warrants formal PRD documentation.
 
 ## Core Mission
 
-Analyze existing TodoWrite tasks and determine if they warrant Task Master AI project management. When beneficial, create comprehensive PRD documentation and initialize the Task Master structure.
+Analyze existing project task files in `./tasks` directory and determine if they warrant Task Master AI project management. When beneficial, create comprehensive PRD documentation while maintaining bidirectional documentation flow with original task files.
 
 ## Analysis Framework
 
 ### Escalation Triggers
 
-**TodoWrite → Task Master transition is warranted when:**
-- Current todos have grown beyond 8-10 items
-- Tasks span multiple domains or expertise areas
-- Implementation requires architectural decisions
-- Project timeline extends beyond 2-3 sessions
-- Multiple stakeholders or systems involved
-- Research phase reveals significant complexity
-- Tasks have spawned multiple sub-tasks organically
+**Task File → Task Master transition is warranted when:**
+- Multiple related task files spanning a single strategic initiative
+- Task files reveal architectural decisions spanning multiple components
+- Individual tasks grow beyond their original scope significantly  
+- Cross-system integration requirements emerge
+- Tasks require formal stakeholder coordination
+- Research phases reveal enterprise-level complexity
+- Task dependencies create complex sequencing requirements
 
 ### Assessment Process
 
-1. **Current Todo Analysis**
-   - Count and categorize existing tasks
-   - Identify cross-cutting concerns
-   - Assess implementation complexity
-   - Evaluate time horizon and scope
+1. **Task File Portfolio Analysis**
+   - Scan all tasks in backlog/doing/completed directories
+   - Identify thematically related task groups
+   - Assess cross-cutting architectural concerns
+   - Evaluate strategic project potential
 
 2. **Complexity Indicators**
-   - Technical architecture decisions needed
-   - Multiple integration points
-   - Research and experimentation required
-   - Quality assurance and testing complexity
-   - Documentation and knowledge management needs
+   - Tasks referencing shared system components
+   - Multiple tasks with similar technical approaches
+   - Dependencies spanning several task files
+   - Research findings indicating broader requirements
+   - Quality assurance spanning multiple components
 
-3. **Value Proposition**
-   - Would PRD documentation add clarity?
-   - Are there unknown requirements to discover?
-   - Would stakeholder alignment benefit from formal structure?
-   - Is this a reusable pattern for future projects?
+3. **Value Proposition Assessment**
+   - Would formal PRD add strategic clarity?
+   - Are there undiscovered requirements in the domain?
+   - Would TaskMaster project structure improve coordination?
+   - Is this a strategic capability for the organization?
+
+### Task File Integration Strategy
+
+**Single Task Focus:**
+- Convert one task file to comprehensive PRD
+- Maintain task file as implementation tracking
+- Link TaskMaster project to original task
+
+**Multi-Task Initiative:**
+- Create strategic PRD encompassing several related tasks
+- Link all related task files to TaskMaster project
+- Use task files for tactical implementation tracking
 
 ## Execution Process
 
-### Phase 1: Todo Review and Assessment
-- Read current TodoWrite tasks
-- Analyze scope and complexity
-- Identify patterns and themes
-- Assess project timeline and resources
+### Phase 1: Task File Discovery and Analysis
+- Scan `./tasks` directory structure (backlog/doing/completed)
+- Read and analyze specified task files or all tasks if no focus given
+- Identify strategic themes and cross-cutting concerns
+- Assess architectural and integration complexity
 
-### Phase 2: Task Master Evaluation
-- Determine if Task Master adds value
-- Identify PRD sections and content
-- Plan project structure and organization
-- Consider integration with existing work
+### Phase 2: Strategic Assessment
+- Determine if Task Master adds strategic value
+- Identify PRD structure and strategic content areas
+- Plan TaskMaster project organization
+- Design integration between TaskMaster and task files
 
-### Phase 3: Transition Planning (if warranted)
-- Create comprehensive PRD document
+### Phase 3: PRD Creation and TaskMaster Setup (if warranted)
+- Create comprehensive PRD document in `.taskmaster/docs/`
 - Initialize Task Master project structure
-- Migrate existing progress and context
-- Establish new workflow patterns
+- Link TaskMaster project to relevant task files
+- Establish bidirectional documentation flow
 
-### Phase 4: Execution Guidance
-- Provide specific next steps
-- Explain new workflow integration
-- Maintain continuity with existing work
-- Set up success metrics and tracking
+### Phase 4: Integration and Workflow Guidance
+- Update task files with TaskMaster project references
+- Provide tactical execution guidance
+- Establish TaskMaster → task file documentation flow
+- Set up progress tracking across both systems
 
 ## PRD Template Structure
 
@@ -111,50 +123,92 @@ When creating a PRD, use this comprehensive structure:
 
 ### Assessment Result - No Escalation Needed:
 ```
-Assessment: Current TodoWrite tasks remain appropriate for immediate execution.
-Complexity Level: [X/10] - Still within TodoWrite optimal range
-Recommendation: Continue with current TodoWrite workflow
-Rationale: [Specific reasons why Task Master isn't needed]
+Task File Analysis: [X] tasks analyzed across [Y] domains
+Strategic Complexity: [X/10] - Suitable for individual task file management
+Recommendation: Continue with project task file workflow
+Rationale: [Specific reasons why TaskMaster strategic management isn't needed]
+Individual Task Optimization: [Suggestions for current task files]
 ```
 
 ### Assessment Result - Task Master Recommended:
 ```
-Assessment: Tasks have grown beyond TodoWrite optimal scope
-Complexity Level: [X/10] - Task Master management warranted  
+Task File Analysis: [X] tasks analyzed, [Y] strategic themes identified
+Strategic Complexity: [X/10] - TaskMaster strategic management warranted
+Strategic Initiative: [Name/description of the strategic project]
+
 Transition Plan:
-1. PRD Creation: [Outline structure and content]
-2. Task Master Setup: [Implementation steps]
-3. Migration Strategy: [How to preserve existing progress]
-4. New Workflow: [Integration patterns]
+1. PRD Creation: [Strategic scope and structure]
+2. TaskMaster Setup: [Project initialization steps]
+3. Task File Integration: [How task files link to strategic project]
+4. Bidirectional Workflow: [Documentation flow patterns]
+
+Related Task Files:
+- [List of task files that would be part of strategic project]
 
 Immediate Next Steps:
-[Specific actionable items to begin transition]
+[Specific actionable items to begin strategic transition]
+```
+
+### Multi-Task Strategic Assessment:
+```
+Strategic Theme Analysis: [X] related task files identified
+Theme: [Description of strategic initiative]
+Scope: [Cross-cutting concerns and architectural decisions]
+
+Recommended Approach:
+- Strategic PRD: [High-level project management]
+- Task File Tracking: [Tactical implementation management]
+- Integration Points: [How systems work together]
+
+Benefits of Strategic Management:
+[Why TaskMaster adds value beyond individual task files]
 ```
 
 ## Integration Considerations
 
-### Preserving Existing Work
-- Document current progress and decisions
-- Migrate completed tasks to project history
-- Preserve context and lessons learned
-- Maintain momentum through transition
+### Preserving Task File Context
+- Document current task file progress and decisions in TaskMaster
+- Link TaskMaster tasks back to original task files
+- Preserve task file as single source of implementation truth
+- Maintain task file kanban workflow for tactical execution
 
-### Workflow Integration  
-- Establish Task Master for strategic planning
-- Use TodoWrite for tactical execution
-- Create clear handoff points between systems
-- Define escalation and de-escalation triggers
+### Bidirectional Documentation Flow
+- TaskMaster strategic decisions update relevant task files
+- Task file progress and learnings inform TaskMaster planning
+- Clear protocols for cross-system documentation sync
+- Regular review points between strategic and tactical levels
+
+### Workflow Integration Patterns
+- TaskMaster for strategic planning and coordination
+- Task files for tactical implementation and tracking
+- Clear handoff points and escalation triggers
+- Maintain both systems as complementary, not competitive
 
 ### Team Coordination
-- Communicate workflow changes to stakeholders
-- Provide training on new tools and processes
-- Establish review and approval processes
-- Create documentation for ongoing maintenance
+- Task files remain primary interface for individual contributors
+- TaskMaster provides strategic context and coordination
+- Regular sync between strategic planning and tactical execution
+- Clear ownership and responsibility boundaries
 
-Focus on creating seamless transitions that enhance rather than disrupt existing productivity patterns.
+### Git Integration
+- TaskMaster documentation committed to `.taskmaster/` directory
+- Task file updates maintain existing git workflow
+- Cross-references between systems maintained in git history
+- Strategic decisions linked to implementing task files
+
+Focus on creating strategic value while preserving the effectiveness of existing task file workflows.
+
+## Usage Examples
+
+```bash
+/prd-from-todo                                    # Analyze all task files
+/prd-from-todo "authentication"                   # Focus on auth-related tasks  
+/prd-from-todo "implement-user-auth.md"          # Analyze specific task file
+/prd-from-todo "user management system"          # Thematic analysis
+```
 
 ## Usage
 
-Target: $ARGUMENTS (optional: specific focus areas or context)
+Target: $ARGUMENTS (optional: specific task files, themes, or focus areas)
 
-Analyze current TodoWrite tasks for the specified context and provide transition recommendations.
+Analyze project task files for strategic management potential and provide TaskMaster transition recommendations with maintained task file integration.
