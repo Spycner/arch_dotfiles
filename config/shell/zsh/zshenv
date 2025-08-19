@@ -1,0 +1,26 @@
+# zsh environment configuration
+# Managed by arch_dotfiles repository
+# This file is sourced on all invocations of the shell
+
+# XDG Base Directory Specification
+export XDG_CONFIG_HOME="$HOME/.config"
+export XDG_CACHE_HOME="$HOME/.cache"
+export XDG_DATA_HOME="$HOME/.local/share"
+export XDG_STATE_HOME="$HOME/.local/state"
+
+# Set ZDOTDIR for zsh configuration location
+export ZDOTDIR="${XDG_CONFIG_HOME:-$HOME/.config}/shell/zsh"
+
+# PATH management - add ~/.local/bin if not already present
+# Affixing colons on either side of $PATH to simplify matching
+case ":${PATH}:" in
+    *:"$HOME/.local/bin":*)
+        ;;
+    *)
+        # Prepending path in case a system-installed binary needs to be overridden
+        export PATH="$HOME/.local/bin:$PATH"
+        ;;
+esac
+
+# Vim mode for zsh (managed by setup-shell.py)
+export ZSH_VIM_MODE="false"

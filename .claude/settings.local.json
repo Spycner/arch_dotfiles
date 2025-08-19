@@ -40,7 +40,17 @@
       "Bash(cat:*)",
       "Bash(evtest:*)",
       "Bash(./scripts/utils/layout-switcher.sh:*)",
-      "Bash(xrandr:*)"
+      "Bash(xrandr:*)",
+      "WebFetch(domain:github.com)",
+      "Bash(zsh:*)",
+      "Bash(command -v:*)",
+      "WebFetch(domain:starship.rs)",
+      "WebFetch(domain:support.displaylink.com)",
+      "WebFetch(domain:wiki.archlinux.org)",
+      "WebFetch(domain:bbs.archlinux.org)",
+      "WebFetch(domain:unix.stackexchange.com)",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:www.kernel.org)"
     ],
     "additionalDirectories": [
       "/home/pkraus/.config/hypr",

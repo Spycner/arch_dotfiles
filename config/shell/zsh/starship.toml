@@ -1,0 +1,159 @@
+# Starship configuration with proper Catppuccin Latte theme
+# Managed by arch_dotfiles repository
+
+# Use JSON schema for editor support
+"$schema" = 'https://starship.rs/config-schema.json'
+
+# Use Catppuccin Latte color palette
+palette = "catppuccin_latte"
+
+# Add a blank line between shell prompts
+add_newline = true
+
+# Timeout for commands (in milliseconds)
+command_timeout = 500
+
+# Format configuration - keep all modules but with proper colors
+format = """
+$username\
+$hostname\
+$directory\
+$git_branch\
+$git_status\
+$python\
+$nodejs\
+$rust\
+$package\
+$cmd_duration\
+$line_break\
+$character"""
+
+[character]
+success_symbol = '[❯](blue)'
+error_symbol = '[❯](red)'
+
+[directory]
+style = "bold blue"
+truncation_length = 3
+truncate_to_repo = true
+home_symbol = "~"
+
+[git_branch]
+symbol = ""
+style = "mauve"
+format = "on [$symbol $branch]($style) "
+
+[git_status]
+style = "yellow"
+format = "[$all_status$ahead_behind]($style) "
+conflicted = "="
+ahead = "⇡${count}"
+behind = "⇣${count}"
+diverged = "⇕⇡${ahead_count}⇣${behind_count}"
+up_to_date = ""
+untracked = "?${count}"
+stashed = "$${count}"
+modified = "!${count}"
+staged = "+${count}"
+renamed = "»${count}"
+deleted = "✘${count}"
+
+[python]
+symbol = ""
+style = "yellow"
+format = "via [$symbol $pyenv_prefix($version )]($style)"
+
+[nodejs]
+symbol = ""
+style = "green"
+format = "via [$symbol $version]($style) "
+detect_files = ["package.json", ".nvmrc"]
+
+[rust]
+symbol = ""
+style = "red"
+format = "via [$symbol $version]($style) "
+
+[package]
+symbol = "📦"
+style = "peach"
+format = "is [$symbol $version]($style) "
+disabled = false
+
+[cmd_duration]
+min_time = 2000
+style = "yellow"
+format = "took [$duration]($style) "
+
+[username]
+style_user = "teal"
+style_root = "red"
+format = "[$user]($style) "
+disabled = false
+show_always = true
+
+[hostname]
+ssh_only = true
+style = "green"
+format = "at [$hostname]($style) "
+disabled = false
+
+# Disable modules we don't commonly use to improve performance
+[aws]
+disabled = true
+
+[docker_context]
+disabled = true
+
+[kubernetes]
+disabled = true
+
+[terraform]
+disabled = true
+
+[vagrant]
+disabled = true
+
+[nix_shell]
+disabled = true
+
+[conda]
+disabled = true
+
+[memory_usage]
+disabled = true
+
+[gcloud]
+disabled = true
+
+[openstack]
+disabled = true
+
+# Catppuccin Latte color palette
+[palettes.catppuccin_latte]
+rosewater = "#dc8a78"
+flamingo = "#dd7878"
+pink = "#ea76cb"
+mauve = "#8839ef"
+red = "#d20f39"
+maroon = "#e64553"
+peach = "#fe640b"
+yellow = "#df8e1d"
+green = "#40a02b"
+teal = "#179299"
+sky = "#04a5e5"
+sapphire = "#209fb5"
+blue = "#1e66f5"
+lavender = "#7287fd"
+text = "#4c4f69"
+subtext1 = "#5c5f77"
+subtext0 = "#6c6f85"
+overlay2 = "#7c7f93"
+overlay1 = "#8c8fa1"
+overlay0 = "#9ca0b0"
+surface2 = "#acb0be"
+surface1 = "#bcc0cc"
+surface0 = "#ccd0da"
+base = "#eff1f5"
+mantle = "#e6e9ef"
+crust = "#dce0e8"
