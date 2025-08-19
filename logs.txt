@@ -1,0 +1,56 @@
+[18:40:25.502] INFO: === Starting Real-time Flicker Monitoring ===
+[18:40:25.503] INFO: Monitoring duration: 30 seconds
+[18:40:25.503] INFO: Focusing on monitor: DP-3 (the 60Hz DisplayLink monitor)
+[18:40:25.503] INFO: Press Ctrl+C to stop early
+[18:40:25.503] INFO: Started display state monitoring for DP-3
+[18:40:25.504] INFO: Started USB event monitoring
+[18:40:25.504] INFO: Status: 0s elapsed, 0 events detected
+[18:40:25.504] INFO: Started DRM event monitoring thread
+[18:40:25.510] INFO: USB EVENT: [    5.724491] pk-arch-laptop systemd[1]: Starting Rule-based Manager for Device Events and Files...
+[18:40:25.511] INFO: USB EVENT: [    5.781250] pk-arch-laptop systemd[1]: Started Rule-based Manager for Device Events and Files.
+[18:40:35.506] INFO: Status: 10s elapsed, 2 events detected
+[18:40:45.508] INFO: Status: 20s elapsed, 2 events detected
+[18:40:56.512] INFO: === Monitoring Complete ===
+[18:40:56.512] INFO: Total events detected: 2
+[18:40:56.512] INFO:   usb_event: 2 events
+[18:40:56.512] INFO: Recent events:
+[18:40:56.512] INFO:   [18:40:25.510] usb_event: [    5.724491] pk-arch-laptop systemd[1]: Starting Rule-based Manager for Device Events and Files...
+[18:40:56.513] INFO:   [18:40:25.511] usb_event: [    5.781250] pk-arch-laptop systemd[1]: Started Rule-based Manager for Device Events and Files.
+[18:40:56.513] INFO: Full log saved to: /home/pkraus/.local/share/arch_dotfiles/debug_logs/realtime_flicker_20250819_184025.log
+
+⚠️  Some activity detected (2 events)
+Monitor the situation and apply fixes if needed
+[[32mINFO[0m] === Checking DP-3 Monitor Status ===
+[[32mINFO[0m] DP-3 Status:
+[[32mINFO[0m]   Resolution: 3840x2160
+[[32mINFO[0m]   Refresh Rate: 60.00Hz
+[[32mINFO[0m]   DPMS Status: True
+[[32mINFO[0m]   Active Workspace: 2
+[[32mINFO[0m]   Description: IPS Inc. (Intellectual Property Solutions Inc.) AD320U 0x00000001
+[[32mINFO[0m] === Testing DP-3 Stability for 15 seconds ===
+[[92mSUCCESS[0m] ✓ DP-3 remained stable during test
+[[32mINFO[0m] === Checking DP-3 Monitor Status ===
+[[32mINFO[0m] DP-3 Status:
+[[32mINFO[0m]   Resolution: 3840x2160
+[[32mINFO[0m]   Refresh Rate: 60.00Hz
+[[32mINFO[0m]   DPMS Status: True
+[[32mINFO[0m]   Active Workspace: 2
+[[32mINFO[0m]   Description: IPS Inc. (Intellectual Property Solutions Inc.) AD320U 0x00000001
+[[32mINFO[0m] === Starting DP-3 Flicker Fix Sequence ===
+[[32mINFO[0m] === Optimizing USB for High Bandwidth ===
+[[33mWARNING[0m] DisplayLink device not found for specific optimization
+[[32mINFO[0m] === Stabilizing DP-3 Refresh Rate ===
+[[32mINFO[0m] Trying configuration 1: DP-3,3840x2160@60.00,1280x0,1
+[[32mINFO[0m] ✓ Set DP-3 configuration 1
+[[92mSUCCESS[0m] ✓ Configuration 1 successful
+[[32mINFO[0m]   DP-3 now: 3840x2160@60.00Hz
+[[32mINFO[0m] === Testing DP-3 Stability for 10 seconds ===
+[[92mSUCCESS[0m] ✓ DP-3 remained stable during test
+[[92mSUCCESS[0m] ✓ DP-3 appears stable after fixes
+[[32mINFO[0m] === Creating DP-3 Startup Script ===
+[[32mINFO[0m] ✓ Created startup script: /home/pkraus/.local/bin/setup-dp3.sh
+[[32mINFO[0m] Run this script after connecting DisplayLink dock:
+[[32mINFO[0m]   /home/pkraus/.local/bin/setup-dp3.sh
+[[92mSUCCESS[0m] === Fix sequence complete ===
+[[32mINFO[0m] If flickering persists, try the quick-fix option:
+[[32mINFO[0m]   uv run scripts/fix-60hz-flicker.py --quick-fix

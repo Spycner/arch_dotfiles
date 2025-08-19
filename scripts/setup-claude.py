@@ -18,6 +18,7 @@ import argparse
 import json
 import logging
 import shutil
+import subprocess
 import sys
 from datetime import datetime
 from pathlib import Path
@@ -90,6 +91,61 @@ class ClaudeSetup:
     def _color(self, text: str, color: str) -> str:
         """Apply color to text."""
         return f"{self.colors.get(color, '')}{text}{self.colors['reset']}"
+    
+    def _run_command(self, cmd: List[str], capture_output: bool = True) -> Tuple[bool, str]:
+        """Run a shell command and return success status and output."""
+        if self.dry_run:
+            self.logger.info(f"DRY RUN: Would execute: {' '.join(cmd)}")
+            return True, "DRY RUN"
+        
+        try:
+            result = subprocess.run(
+                cmd,
+                capture_output=capture_output,
+                text=True,
+                check=True
+            )
+            return True, result.stdout if capture_output else ""
+        except subprocess.CalledProcessError as e:
+            self.logger.error(f"Command failed: {e}")
+            return False, e.stderr if capture_output else str(e)
+        except FileNotFoundError:
+            self.logger.error(f"Command not found: {cmd[0]}")
+            return False, f"Command not found: {cmd[0]}"
+    
+    def _check_npm(self) -> bool:
+        """Check if npm is installed."""
+        return shutil.which('npm') is not None
+    
+    def _check_npm_package_installed(self, package_name: str) -> bool:
+        """Check if an npm package is installed globally."""
+        if self.dry_run:
+            return False  # Assume not installed in dry run mode
+        
+        success, output = self._run_command(['npm', 'list', '-g', package_name, '--depth=0'], capture_output=True)
+        return success and package_name in output
+    
+    def _install_npm_package(self, package_name: str, description: str = "") -> bool:
+        """Install an npm package globally."""
+        print(f"Installing {package_name}{'(' + description + ')' if description else ''}...")
+        
+        if self._check_npm_package_installed(package_name):
+            print(f"  {self._color('○', 'yellow')} {package_name} already installed")
+            return True
+        
+        if self.dry_run:
+            print(f"  DRY RUN: Would run 'npm install -g {package_name}'")
+            return True
+        
+        success, output = self._run_command(['npm', 'install', '-g', package_name])
+        
+        if success:
+            print(f"  {self._color('✓', 'green')} Successfully installed {package_name}")
+            return True
+        else:
+            print(f"  {self._color('✗', 'red')} Failed to install {package_name}")
+            self.logger.error(f"npm install failed for {package_name}: {output}")
+            return False
     
     def _load_state(self) -> Dict:
         """Load setup state from file."""
@@ -176,6 +232,7 @@ class ClaudeSetup:
     def check_prerequisites(self) -> bool:
         """Check if all prerequisites are met."""
         issues = []
+        warnings = []
         
         # Check if repo_root exists
         if not self.repo_root.exists():
@@ -185,16 +242,27 @@ class ClaudeSetup:
         if not self.project_claude_dir.exists():
             issues.append(f"Project .claude directory not found: {self.project_claude_dir}")
         
-        # Check if user .claude directory exists
+        # Check if npm is available
+        if not self._check_npm():
+            issues.append("npm not found. Please install Node.js and npm first.")
+            issues.append("Visit https://nodejs.org/ or use 'nvm install node'")
+        
+        # Check if user .claude directory exists (this is a warning, not a hard requirement)
         if not self.user_claude_dir.exists():
-            issues.append(f"User .claude directory not found: {self.user_claude_dir}")
-            issues.append("This usually means Claude Code hasn't been run yet.")
+            warnings.append(f"User .claude directory not found: {self.user_claude_dir}")
+            warnings.append("This will be created when Claude Code runs for the first time.")
         
         if issues:
             print(self._color("Prerequisites check failed:", 'red'))
             for issue in issues:
                 print(f"  - {issue}")
             return False
+        
+        if warnings:
+            print(self._color("Warnings:", 'yellow'))
+            for warning in warnings:
+                print(f"  - {warning}")
+            print()
         
         return True
     
@@ -235,6 +303,23 @@ class ClaudeSetup:
         
         print()
         
+        # Show npm packages status
+        print("npm Packages Status:")
+        packages = [
+            ("@anthropic-ai/claude-code", "Claude Code CLI"),
+            ("ccusage", "Usage tracking tool")
+        ]
+        
+        for package_name, description in packages:
+            if self._check_npm_package_installed(package_name):
+                status = self._color('✓ Installed', 'green')
+            else:
+                status = self._color('✗ Not installed', 'red')
+            
+            print(f"  {description:<20} {status}")
+        
+        print()
+        
         # Show backup information
         if state.get('backups'):
             print("Available Backups:")
@@ -246,6 +331,30 @@ class ClaudeSetup:
         else:
             print("No backups available")
     
+    def install_npm_packages(self) -> bool:
+        """Install required npm packages."""
+        print(self._color("Installing npm packages...", 'blue'))
+        print()
+        
+        packages = [
+            ("@anthropic-ai/claude-code", "AI-powered coding assistant"),
+            ("ccusage", "Claude Code usage tracking and analysis tool")
+        ]
+        
+        failed_packages = []
+        for package_name, description in packages:
+            if not self._install_npm_package(package_name, description):
+                failed_packages.append(package_name)
+        
+        print()
+        
+        if failed_packages:
+            print(self._color(f"Failed to install: {', '.join(failed_packages)}", 'red'))
+            return False
+        else:
+            print(self._color("✅ All npm packages installed successfully!", 'green'))
+            return True
+    
     def setup(self) -> bool:
         """Perform the Claude configuration setup."""
         print(self._color("Setting up Claude Code configuration...", 'blue'))
@@ -253,6 +362,13 @@ class ClaudeSetup:
         
         if not self.check_prerequisites():
             return False
+        
+        # Install npm packages first
+        if not self.install_npm_packages():
+            print(self._color("Setup failed due to npm package installation errors", 'red'))
+            return False
+        
+        print()
         
         state = self._load_state()
         timestamp = datetime.now().isoformat()
@@ -307,6 +423,7 @@ class ClaudeSetup:
         print("  - Add custom agents to .claude/agents/")
         print("  - Add custom commands to .claude/commands/")
         print("  - Run 'claude --help' to see available agents and commands")
+        print("  - Use 'ccusage' to monitor your Claude Code usage and costs")
         
         return True
     
@@ -402,9 +519,14 @@ EXAMPLES:
     uv run scripts/setup-claude.py --rollback   # Undo setup
 
 DESCRIPTION:
-    This script sets up project-specific Claude Code agents and commands
-    directories by creating symlinks from ~/.claude/agents and ~/.claude/commands
+    This script installs Claude Code and related tools, then sets up 
+    project-specific Claude Code agents and commands directories by 
+    creating symlinks from ~/.claude/agents and ~/.claude/commands
     to the project's .claude/ directories.
+    
+    The script installs:
+    - @anthropic-ai/claude-code: AI-powered coding assistant
+    - ccusage: Usage tracking and cost analysis tool
     
     This allows you to version control and share Claude configurations
     with your team while maintaining compatibility with Claude Code.
