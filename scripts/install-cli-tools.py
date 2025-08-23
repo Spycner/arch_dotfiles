@@ -43,6 +43,7 @@ class CLIToolsInstaller:
         Package("bat", "Cat with syntax highlighting and git integration (cat will be aliased to bat)"),
         Package("yazi", "Fast terminal file manager with vim-like keybindings and preview support"),
         Package("usbutils", "USB device utilities including lsusb command for device enumeration", "lsusb"),
+        Package("lazygit", "Simple terminal UI for git commands with interactive features", "lazygit"),
         # Add more packages here as needed:
         # Package("ripgrep", "Fast text search tool", "rg"),
         # Package("fd", "Modern find replacement"),

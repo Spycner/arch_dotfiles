@@ -54,13 +54,20 @@ class ShellSetup:
         
         # Files to link
         self.zdotdir = self.home_dir / '.config' / 'shell' / 'zsh'
-        self.link_map = {
-            # Home directory symlinks
-            self.repo_root / 'config' / 'shell' / 'zsh' / 'zshenv': self.home_dir / '.zshenv',
-            self.repo_root / 'config' / 'shell' / 'zsh' / 'starship.toml': self.home_dir / '.config' / 'starship.toml',
-            # ZDOTDIR symlinks (zsh looks here when ZDOTDIR is set)
-            self.repo_root / 'config' / 'shell' / 'zsh' / 'zshrc': self.zdotdir / '.zshrc',
-        }
+        # Use list of tuples to handle duplicate source files (zshenv needs to be in both locations)
+        self.link_list = [
+            # Home directory symlinks (needed for initial ZDOTDIR setup)
+            (self.repo_root / 'config' / 'shell' / 'zsh' / 'zshenv', self.home_dir / '.zshenv'),
+            (self.repo_root / 'config' / 'shell' / 'zsh' / 'starship.toml', self.home_dir / '.config' / 'starship.toml'),
+            # ZDOTDIR symlinks (zsh looks here when ZDOTDIR is set) - all files in one location
+            (self.repo_root / 'config' / 'shell' / 'zsh' / 'zshenv', self.zdotdir / '.zshenv'),
+            (self.repo_root / 'config' / 'shell' / 'zsh' / 'zshrc', self.zdotdir / '.zshrc'),
+            (self.repo_root / 'config' / 'shell' / 'zsh' / 'vim-mode.zsh', self.zdotdir / 'vim-mode.zsh'),
+            (self.repo_root / 'config' / 'shell' / 'zsh' / 'browser-aliases.zsh', self.zdotdir / 'browser-aliases.zsh'),
+        ]
+        
+        # Convert to dict for backward compatibility with backup_existing_config method
+        self.link_map = dict(self.link_list)
         
         # Ensure required directories exist
         self.backup_dir.mkdir(parents=True, exist_ok=True)
@@ -92,6 +99,7 @@ class ShellSetup:
             self.repo_root / 'config' / 'shell' / 'zsh' / 'zshrc',
             self.repo_root / 'config' / 'shell' / 'zsh' / 'zshenv',
             self.repo_root / 'config' / 'shell' / 'zsh' / 'starship.toml',
+            self.repo_root / 'config' / 'shell' / 'zsh' / 'browser-aliases.zsh',
         ]
         
         # Add vim-mode.zsh if vim mode is enabled
@@ -138,7 +146,7 @@ class ShellSetup:
         """Create symlinks from repository to home directory."""
         self.print_info("Creating symlinks...")
         
-        for source, target in self.link_map.items():
+        for source, target in self.link_list:
             try:
                 if not self.dry_run:
                     # Remove existing file/symlink

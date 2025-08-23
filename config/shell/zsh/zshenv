@@ -22,5 +22,10 @@ case ":${PATH}:" in
         ;;
 esac
 
+# Editor configuration
+export EDITOR="nvim"
+export VISUAL="nvim"
+export SUDO_EDITOR="nvim"
+
 # Vim mode for zsh (managed by setup-shell.py)
 export ZSH_VIM_MODE="false"

@@ -50,7 +50,22 @@
       "WebFetch(domain:bbs.archlinux.org)",
       "WebFetch(domain:unix.stackexchange.com)",
       "WebFetch(domain:github.com)",
-      "WebFetch(domain:www.kernel.org)"
+      "WebFetch(domain:www.kernel.org)",
+      "Read(//home/pkraus/.config/shell/zsh/**)",
+      "Bash(env)",
+      "Read(//home/pkraus/**)",
+      "Bash(echo $ZSH_VIM_MODE)",
+      "Bash(echo $EDITOR)",
+      "Bash(echo $VISUAL)",
+      "Bash(echo $SUDO_EDITOR)",
+      "Bash(echo $ZDOTDIR)",
+      "Bash(readlink:*)",
+      "Read(//home/pkraus/**)",
+      "Bash(echo:*)",
+      "Read(//etc/**)",
+      "Bash(exec zsh)",
+      "Read(//home/pkraus/.config/shell/zsh/**)",
+      "Bash(ls:*)"
     ],
     "additionalDirectories": [
       "/home/pkraus/.config/hypr",
