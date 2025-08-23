@@ -40,12 +40,15 @@ class CLIToolsInstaller:
     # Package list - easily extensible
     PACKAGES = [
         Package("jq", "JSON processor for parsing Hyprland device information"),
-        Package("waybar-git", "Highly customizable Wayland bar for Hyprland (git version for latest features)", "waybar"),
+        Package("bat", "Cat with syntax highlighting and git integration (cat will be aliased to bat)"),
+        Package("yazi", "Fast terminal file manager with vim-like keybindings and preview support"),
+        Package("usbutils", "USB device utilities including lsusb command for device enumeration", "lsusb"),
         # Add more packages here as needed:
         # Package("ripgrep", "Fast text search tool", "rg"),
         # Package("fd", "Modern find replacement"),
-        # Package("bat", "Cat with syntax highlighting"),
         # Package("eza", "Modern ls replacement"),
+        # Package("fzf", "Fuzzy finder for command line"),
+        # Package("htop", "Interactive process viewer"),
     ]
     
     def __init__(self, dry_run: bool = False, force: bool = False):

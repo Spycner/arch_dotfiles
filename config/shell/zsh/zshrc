@@ -1,0 +1,42 @@
+# zsh configuration with zinit and essential plugins
+# Managed by arch_dotfiles repository
+
+# Enable zinit plugin manager
+ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit/zinit.git"
+
+# Download zinit if it's not there yet
+if [[ ! -d "$ZINIT_HOME" ]]; then
+    print -P "%F{33} %F{220}Installing %F{33}ZDHARMA-CONTINUUM%F{220} Initiative Plugin Manager (%F{33}zdharma-continuum/zinit%F{220})…%f"
+    command mkdir -p "$(dirname $ZINIT_HOME)"
+    command git clone https://github.com/zdharma-continuum/zinit.git "$ZINIT_HOME" && \
+        print -P "%F{33} %F{34}Installation successful.%f%b" || \
+        print -P "%F{160} The clone has failed.%f%b"
+fi
+
+# Load zinit
+source "${ZINIT_HOME}/zinit.zsh"
+
+# Vim mode integration (optional, managed by setup-shell.py)
+if [[ "${ZSH_VIM_MODE:-false}" == "true" ]]; then
+    # Source vim-mode.zsh from the same directory as this zshrc file
+    source "${${(%):-%x}:A:h}/vim-mode.zsh"
+fi
+
+# Essential plugins only - syntax highlighting and autosuggestions
+zinit light zsh-users/zsh-syntax-highlighting
+zinit light zsh-users/zsh-autosuggestions
+
+# Load completions
+autoload -Uz compinit
+compinit
+
+
+# Preserve existing NVM setup
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+# Initialize Starship prompt (if available)
+if command -v starship &>/dev/null; then
+    eval "$(starship init zsh)"
+fi
