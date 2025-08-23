@@ -65,7 +65,9 @@
       "Read(//etc/**)",
       "Bash(exec zsh)",
       "Read(//home/pkraus/.config/shell/zsh/**)",
-      "Bash(ls:*)"
+      "Bash(ls:*)",
+      "WebFetch(domain:wiki.hypr.land)",
+      "WebFetch(domain:wiki.hypr.land)"
     ],
     "additionalDirectories": [
       "/home/pkraus/.config/hypr",

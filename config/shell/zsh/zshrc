@@ -16,14 +16,17 @@ fi
 # Load zinit
 source "${ZINIT_HOME}/zinit.zsh"
 
+# History configuration for shared sessions and proper persistence
+source "$ZDOTDIR/history.zsh"
+
 # Vim mode integration (optional, managed by setup-shell.py)
 if [[ "${ZSH_VIM_MODE:-false}" == "true" ]]; then
     # Source vim-mode.zsh from ZDOTDIR
     source "$ZDOTDIR/vim-mode.zsh"
 fi
 
-# Browser aliases with Wayland support
-source "$ZDOTDIR/browser-aliases.zsh"
+# Aliases
+source "$ZDOTDIR/aliases.zsh"
 
 # Essential plugins only - syntax highlighting and autosuggestions
 zinit light zsh-users/zsh-syntax-highlighting

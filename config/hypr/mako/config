@@ -1,0 +1,60 @@
+# Mako notification daemon configuration for Hyprland
+# Documentation: man 5 mako
+
+# Position and anchor
+anchor=top-right
+margin=10
+
+# Dimensions
+width=350
+height=100
+
+# Appearance
+font=JetBrainsMono Nerd Font 12
+background-color=#1e1e2e
+text-color=#cdd6f4
+border-color=#89b4fa
+border-size=2
+border-radius=10
+
+# Content
+format=<b>%s</b>\n%b
+max-visible=5
+sort=-time
+
+# Timing
+default-timeout=5000
+ignore-timeout=1
+
+# Behavior
+layer=overlay
+markup=1
+actions=1
+
+# Grouping
+group-by=app-name
+max-icon-size=32
+
+# Icon settings
+icons=1
+icon-location=left
+
+# Progressive timeout
+[urgency=low]
+border-color=#a6adc8
+default-timeout=3000
+
+[urgency=normal]
+border-color=#89b4fa
+default-timeout=5000
+
+[urgency=critical]
+border-color=#f38ba8
+default-timeout=0
+
+# App-specific settings
+[app-name="discord"]
+default-timeout=8000
+
+[app-name="spotify"]
+default-timeout=3000
