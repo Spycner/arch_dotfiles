@@ -32,5 +32,4 @@ export ZSH_VIM_MODE="false"
 
 # Theming
 export LS_COLORS="$(vivid generate catppuccin-latte)"
-export BAT_THEME="Catppuccin Latte"
 export MANPAGER="sh -c 'col -bx | bat -l man -p'"

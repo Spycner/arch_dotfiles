@@ -29,8 +29,11 @@ $line_break\
 $character"""
 
 [character]
-success_symbol = '[❯](blue)'
-error_symbol = '[❯](red)'
+# Note the use of Catppuccin color 'maroon'
+success_symbol = "[[♥](green) ❯](maroon)"
+error_symbol = "[❯](red)"
+vimcmd_symbol = "[❮](green)"
+
 
 [directory]
 style = "bold blue"
