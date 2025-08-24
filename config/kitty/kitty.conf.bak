@@ -88,8 +88,8 @@ window_padding_width 4
 # Disabled for clean, minimal interface
 # Tab navigation still works with keyboard shortcuts
 
-# Color scheme - Catppuccin Frappe (applied via setup script)
-# Theme will be applied using 'kitten themes "Catppuccin-Frappe"'
+# Color scheme - Catppuccin Latte (applied via setup script)
+# Theme will be applied using 'kitten themes "Catppuccin-Latte"'
 # This ensures proper integration with kitty's theme system
 
 # Background opacity for transparency effect
@@ -126,6 +126,6 @@ map ctrl+shift+l clear_terminal reset active
 map ctrl+shift+f6 kitten themes
 
 # BEGIN_KITTY_THEME
-# Catppuccin-Frappe
+# Catppuccin-Latte
 include current-theme.conf
 # END_KITTY_THEME

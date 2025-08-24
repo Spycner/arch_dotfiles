@@ -18,6 +18,7 @@ Usage:
 import argparse
 import json
 import shutil
+import subprocess
 import sys
 from datetime import datetime
 from pathlib import Path
@@ -27,9 +28,10 @@ from typing import Dict, Optional
 class KittySetup:
     """Manage Kitty terminal configuration setup"""
     
-    def __init__(self, repo_root: Path, dry_run: bool = False):
+    def __init__(self, repo_root: Path, dry_run: bool = False, theme: str = "Catppuccin-Frappe"):
         self.repo_root = repo_root
         self.dry_run = dry_run
+        self.theme = theme
         self.config_source = repo_root / "config" / "kitty"
         self.config_target = Path.home() / ".config" / "kitty"
         
@@ -113,6 +115,40 @@ class KittySetup:
             self.config_source.mkdir(parents=True, exist_ok=True)
             self.print_status("info", f"Created source directory: {self.config_source}")
     
+    def apply_theme(self) -> bool:
+        """Apply the Catppuccin theme using kitten themes command"""
+        try:
+            self.print_status("info", f"Applying theme: {self.theme}")
+            
+            if self.dry_run:
+                self.print_status("info", f"Would apply theme: kitten themes \"{self.theme}\"")
+                return True
+            
+            # Apply the theme using kitten themes command
+            result = subprocess.run(
+                ["kitten", "themes", self.theme],
+                capture_output=True,
+                text=True,
+                timeout=30
+            )
+            
+            if result.returncode == 0:
+                self.print_status("success", f"Applied theme: {self.theme}")
+                return True
+            else:
+                self.print_status("error", f"Failed to apply theme: {result.stderr.strip() if result.stderr else 'Unknown error'}")
+                return False
+                
+        except subprocess.TimeoutExpired:
+            self.print_status("error", "Theme application timed out")
+            return False
+        except FileNotFoundError:
+            self.print_status("error", "kitten command not found. Make sure kitty is properly installed.")
+            return False
+        except Exception as e:
+            self.print_status("error", f"Failed to apply theme: {str(e)}")
+            return False
+    
     def setup(self) -> bool:
         """Set up Kitty configuration"""
         try:
@@ -138,15 +174,21 @@ class KittySetup:
                 self.config_target.symlink_to(self.config_source)
                 self.print_status("success", f"Created symlink: {self.config_target} -> {self.config_source}")
             
+            # Apply theme after symlink creation
+            if not self.apply_theme():
+                self.print_status("warning", "Theme application failed, but configuration was created")
+            
             # Update state
             state['setup_date'] = datetime.now().isoformat()
             state['config_source'] = str(self.config_source)
             state['config_target'] = str(self.config_target)
+            state['theme'] = self.theme
             self.save_state(state)
             
             if not self.dry_run:
                 self.print_status("success", "Kitty configuration setup complete!")
-                self.print_status("info", "Restart Kitty or press Ctrl+Shift+F5 to reload config")
+                self.print_status("info", "Theme applied. Restart Kitty or press Ctrl+Shift+F5 to see changes")
+                self.print_status("info", "Use Ctrl+Shift+F6 to open theme selector")
             else:
                 self.print_status("info", "Dry run complete - no changes made")
             
@@ -223,13 +265,21 @@ Examples:
         help='Rollback to previous configuration'
     )
     
+    parser.add_argument(
+        '--theme',
+        type=str,
+        default='Catppuccin-Frappe',
+        choices=['Catppuccin-Latte', 'Catppuccin-Frappe', 'Catppuccin-Macchiato', 'Catppuccin-Mocha'],
+        help='Catppuccin theme variant to apply (default: Catppuccin-Frappe)'
+    )
+    
     args = parser.parse_args()
     
     # Find repository root
     repo_root = Path(__file__).parent.parent
     
     # Initialize setup
-    setup = KittySetup(repo_root, dry_run=args.dry_run)
+    setup = KittySetup(repo_root, dry_run=args.dry_run, theme=args.theme)
     
     # Execute requested action
     if args.rollback:

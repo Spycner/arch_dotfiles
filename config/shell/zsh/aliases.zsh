@@ -8,7 +8,6 @@ alias ld="eza -lD" # list only directories
 alias lf="eza -lf --color=always | grep -v /" # list only files
 alias lh="eza -dl .* --group-directories-first" # list only hidden files
 alias ll="eza -al --group-directories-first" # list everything with directories first
-alias ls="eza -alf --color=always --sort=size | grep -v /" # list files sorted by size
 alias lt="eza -al --modified" # list everything sorted by time
 
 # File mods

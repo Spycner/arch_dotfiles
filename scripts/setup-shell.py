@@ -62,8 +62,9 @@ class ShellSetup:
             # ZDOTDIR symlinks (zsh looks here when ZDOTDIR is set) - all files in one location
             (self.repo_root / 'config' / 'shell' / 'zsh' / 'zshenv', self.zdotdir / '.zshenv'),
             (self.repo_root / 'config' / 'shell' / 'zsh' / 'zshrc', self.zdotdir / '.zshrc'),
+            (self.repo_root / 'config' / 'shell' / 'zsh' / 'history.zsh', self.zdotdir / 'history.zsh'),
             (self.repo_root / 'config' / 'shell' / 'zsh' / 'vim-mode.zsh', self.zdotdir / 'vim-mode.zsh'),
-            (self.repo_root / 'config' / 'shell' / 'zsh' / 'browser-aliases.zsh', self.zdotdir / 'browser-aliases.zsh'),
+            (self.repo_root / 'config' / 'shell' / 'zsh' / 'aliases.zsh', self.zdotdir / 'aliases.zsh'),
         ]
         
         # Convert to dict for backward compatibility with backup_existing_config method
@@ -98,8 +99,9 @@ class ShellSetup:
         required_files = [
             self.repo_root / 'config' / 'shell' / 'zsh' / 'zshrc',
             self.repo_root / 'config' / 'shell' / 'zsh' / 'zshenv',
+            self.repo_root / 'config' / 'shell' / 'zsh' / 'history.zsh',
             self.repo_root / 'config' / 'shell' / 'zsh' / 'starship.toml',
-            self.repo_root / 'config' / 'shell' / 'zsh' / 'browser-aliases.zsh',
+            self.repo_root / 'config' / 'shell' / 'zsh' / 'aliases.zsh',
         ]
         
         # Add vim-mode.zsh if vim mode is enabled

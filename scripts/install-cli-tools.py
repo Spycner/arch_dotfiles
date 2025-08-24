@@ -37,19 +37,31 @@ class Package:
 class CLIToolsInstaller:
     """Manages installation of CLI tools with backup and rollback support."""
     
-    # Package list - easily extensible
+    # Core packages - essential CLI tools for development
     PACKAGES = [
         Package("jq", "JSON processor for parsing Hyprland device information"),
         Package("bat", "Cat with syntax highlighting and git integration (cat will be aliased to bat)"),
         Package("yazi", "Fast terminal file manager with vim-like keybindings and preview support"),
         Package("usbutils", "USB device utilities including lsusb command for device enumeration", "lsusb"),
         Package("lazygit", "Simple terminal UI for git commands with interactive features", "lazygit"),
-        # Add more packages here as needed:
-        # Package("ripgrep", "Fast text search tool", "rg"),
-        # Package("fd", "Modern find replacement"),
-        # Package("eza", "Modern ls replacement"),
-        # Package("fzf", "Fuzzy finder for command line"),
-        # Package("htop", "Interactive process viewer"),
+        Package("man-db", "Manual page reader - essential for accessing documentation", "man"),
+        Package("brightnessctl", "Utility to control screen brightness for laptops"),
+        Package("vivid", "LS_COLORS manager with multiple themes"),
+        Package("eza", "A modern replacement for ls"),
+        Package("btop", "A better top replacement"),
+        Package("ripgrep", "Fast text search tool", "rg"),
+        Package("fd", "Modern find replacement"),
+        Package("fzf", "Fuzzy finder for command line"),
+        Package("tmux", "Terminal multiplexer"),
+    ]
+    
+    # Optional packages - additional tools that users may want
+    OPTIONAL_PACKAGES = [
+        Package("onedrive-abraunegg", "Microsoft OneDrive client for Linux with full sync support", "onedrive"),
+        # Add more optional packages here as needed:
+        # Package("dropbox", "Dropbox client for Linux"),
+        # Package("rclone", "Cloud storage sync tool"),
+        # Package("syncthing", "Decentralized file synchronization"),
     ]
     
     def __init__(self, dry_run: bool = False, force: bool = False):
@@ -181,19 +193,44 @@ class CLIToolsInstaller:
             self.logger.error(f"Failed to create backup: {e}")
             return None
     
-    def list_packages(self) -> None:
+    def list_packages(self, optionals_only: bool = False) -> None:
         """List all available packages and their installation status."""
-        print(self._color("Available CLI tools:", 'blue'))
-        print()
-        
-        for package in self.PACKAGES:
-            if self._is_package_installed(package):
-                status = self._color("✓ installed", 'green')
-            else:
-                status = self._color("✗ not installed", 'yellow')
+        if optionals_only:
+            print(self._color("Optional CLI tools:", 'blue'))
+            print()
             
-            print(f"  {package.name:<15} {status} - {package.description}")
-        print()
+            for package in self.OPTIONAL_PACKAGES:
+                if self._is_package_installed(package):
+                    status = self._color("✓ installed", 'green')
+                else:
+                    status = self._color("✗ not installed", 'yellow')
+                
+                print(f"  {package.name:<20} {status} - {package.description}")
+            print()
+        else:
+            print(self._color("Core CLI tools:", 'blue'))
+            print()
+            
+            for package in self.PACKAGES:
+                if self._is_package_installed(package):
+                    status = self._color("✓ installed", 'green')
+                else:
+                    status = self._color("✗ not installed", 'yellow')
+                
+                print(f"  {package.name:<20} {status} - {package.description}")
+            
+            print()
+            print(self._color("Optional CLI tools:", 'blue'))
+            print()
+            
+            for package in self.OPTIONAL_PACKAGES:
+                if self._is_package_installed(package):
+                    status = self._color("✓ installed", 'green')
+                else:
+                    status = self._color("✗ not installed", 'yellow')
+                
+                print(f"  {package.name:<20} {status} - {package.description}")
+            print()
     
     def install_package(self, package: Package) -> bool:
         """Install a single package."""
@@ -229,15 +266,205 @@ class CLIToolsInstaller:
             return False
     
     def install_all(self) -> bool:
-        """Install all packages."""
+        """Install all core packages and optionally install optional packages."""
         packages_to_install = []
         already_installed = []
         
-        print(self._color("Checking package installation status...", 'blue'))
+        print(self._color("Checking core package installation status...", 'blue'))
         print()
         
-        # Check which packages need installation
+        # Check which core packages need installation
         for package in self.PACKAGES:
+            if self._is_package_installed(package):
+                already_installed.append(package.name)
+                print(f"  {self._color('✓', 'green')} {package.name} - already installed")
+            else:
+                packages_to_install.append(package)
+                print(f"  {self._color('○', 'yellow')} {package.name} - needs installation")
+        
+        print()
+        
+        # Show core package summary
+        if already_installed:
+            print(f"{self._color('Already installed:', 'green')} {', '.join(already_installed)}")
+        
+        core_success = True
+        if packages_to_install:
+            print(f"{self._color('Core packages to install:', 'yellow')} {len(packages_to_install)}")
+            for package in packages_to_install:
+                print(f"  - {package.name}: {package.description}")
+            print()
+            
+            # Confirmation prompt for core packages
+            if not self.force and not self.dry_run:
+                response = input("Proceed with core package installation? (y/N): ")
+                if response.lower() != 'y':
+                    print(self._color("Core installation cancelled", 'yellow'))
+                    return False
+            
+            # Install core packages
+            print(self._color("Installing core packages...", 'blue'))
+            print()
+            
+            failed_packages = []
+            for package in packages_to_install:
+                if not self.install_package(package):
+                    failed_packages.append(package.name)
+                print()
+            
+            # Core installation summary
+            print(self._color("Core Installation Summary:", 'blue'))
+            print(f"  Total core packages: {len(self.PACKAGES)}")
+            print(f"  Already installed: {len(already_installed)}")
+            print(f"  Newly installed: {len(packages_to_install) - len(failed_packages)}")
+            
+            if failed_packages:
+                print(f"  {self._color(f'Failed installations: {len(failed_packages)}', 'red')}")
+                print(f"    Failed packages: {', '.join(failed_packages)}")
+                core_success = False
+            else:
+                print(f"  {self._color('✓ All core installations successful!', 'green')}")
+            
+            print()
+        else:
+            print(self._color("All core packages are already installed!", 'green'))
+            print()
+        
+        # Check and prompt for optional packages
+        optional_packages_to_install = []
+        optional_already_installed = []
+        
+        print(self._color("Checking optional packages...", 'blue'))
+        for package in self.OPTIONAL_PACKAGES:
+            if self._is_package_installed(package):
+                optional_already_installed.append(package.name)
+            else:
+                optional_packages_to_install.append(package)
+        
+        if optional_packages_to_install:
+            print(f"Found {len(optional_packages_to_install)} optional package(s) available:")
+            for package in optional_packages_to_install:
+                print(f"  - {package.name}: {package.description}")
+            print()
+            
+            if not self.force and not self.dry_run:
+                print("How would you like to handle optional packages?")
+                print("  a) Install ALL optional packages")
+                print("  s) Select individual packages to install")
+                print("  n) Skip optional packages")
+                response = input("Choose option (a/s/N): ").lower()
+                
+                if response == 'a':
+                    # Install all optional packages
+                    optional_success = self._install_optional_packages_internal(optional_packages_to_install, optional_already_installed)
+                    return core_success and optional_success
+                elif response == 's':
+                    # Select individual packages
+                    selected_packages = []
+                    print()
+                    print(self._color("Select packages to install (press Enter to skip):", 'blue'))
+                    for package in optional_packages_to_install:
+                        choice = input(f"Install {package.name}? ({package.description}) (y/N): ")
+                        if choice.lower() == 'y':
+                            selected_packages.append(package)
+                    
+                    if selected_packages:
+                        print()
+                        print(f"Selected {len(selected_packages)} package(s) for installation:")
+                        for package in selected_packages:
+                            print(f"  - {package.name}")
+                        
+                        optional_success = self._install_optional_packages_internal(selected_packages, optional_already_installed)
+                        return core_success and optional_success
+                    else:
+                        print(self._color("No optional packages selected", 'yellow'))
+                else:
+                    print(self._color("Optional packages skipped", 'yellow'))
+            elif self.dry_run or self.force:
+                # In dry-run or force mode, show what would happen but don't auto-install
+                print(self._color("Optional packages available but not auto-installed", 'blue'))
+                print("Use --optionals flag to install them explicitly")
+        elif optional_already_installed:
+            print(self._color(f"All optional packages already installed: {', '.join(optional_already_installed)}", 'green'))
+        else:
+            print(self._color("No optional packages defined", 'blue'))
+        
+        return core_success
+    
+    def _install_optional_packages_internal(self, packages_to_install, already_installed) -> bool:
+        """Internal method to install optional packages (used by install_all)."""
+        print()
+        print(self._color("Installing optional packages...", 'blue'))
+        print()
+        
+        failed_packages = []
+        for package in packages_to_install:
+            if not self.install_package(package):
+                failed_packages.append(package.name)
+            print()
+        
+        # Optional installation summary
+        print(self._color("Optional Installation Summary:", 'blue'))
+        print(f"  Total optional packages: {len(self.OPTIONAL_PACKAGES)}")
+        print(f"  Already installed: {len(already_installed)}")
+        print(f"  Newly installed: {len(packages_to_install) - len(failed_packages)}")
+        
+        if failed_packages:
+            print(f"  {self._color(f'Failed installations: {len(failed_packages)}', 'red')}")
+            print(f"    Failed packages: {', '.join(failed_packages)}")
+            return False
+        else:
+            print(f"  {self._color('✓ All optional installations successful!', 'green')}")
+            return True
+    
+    def install_specific(self, package_name: str) -> bool:
+        """Install a specific core package by name."""
+        for package in self.PACKAGES:
+            if package.name == package_name:
+                print(f"{self._color(f'Installing specific core package: {package.name}', 'blue')}")
+                print()
+                
+                if self._is_package_installed(package):
+                    print(self._color(f"✓ {package.name} is already installed", 'green'))
+                    return True
+                
+                return self.install_package(package)
+        
+        print(self._color(f"Error: Package '{package_name}' not found in core package list", 'red'))
+        print("Available core packages:")
+        for package in self.PACKAGES:
+            print(f"  - {package.name}")
+        return False
+    
+    def install_specific_optional(self, package_name: str) -> bool:
+        """Install a specific optional package by name."""
+        for package in self.OPTIONAL_PACKAGES:
+            if package.name == package_name:
+                print(f"{self._color(f'Installing specific optional package: {package.name}', 'blue')}")
+                print()
+                
+                if self._is_package_installed(package):
+                    print(self._color(f"✓ {package.name} is already installed", 'green'))
+                    return True
+                
+                return self.install_package(package)
+        
+        print(self._color(f"Error: Package '{package_name}' not found in optional package list", 'red'))
+        print("Available optional packages:")
+        for package in self.OPTIONAL_PACKAGES:
+            print(f"  - {package.name}")
+        return False
+    
+    def install_optionals(self) -> bool:
+        """Install all optional packages."""
+        packages_to_install = []
+        already_installed = []
+        
+        print(self._color("Checking optional package installation status...", 'blue'))
+        print()
+        
+        # Check which optional packages need installation
+        for package in self.OPTIONAL_PACKAGES:
             if self._is_package_installed(package):
                 already_installed.append(package.name)
                 print(f"  {self._color('✓', 'green')} {package.name} - already installed")
@@ -252,23 +479,23 @@ class CLIToolsInstaller:
             print(f"{self._color('Already installed:', 'green')} {', '.join(already_installed)}")
         
         if not packages_to_install:
-            print(self._color("All packages are already installed!", 'green'))
+            print(self._color("All optional packages are already installed!", 'green'))
             return True
         
-        print(f"{self._color('Packages to install:', 'yellow')} {len(packages_to_install)}")
+        print(f"{self._color('Optional packages to install:', 'yellow')} {len(packages_to_install)}")
         for package in packages_to_install:
             print(f"  - {package.name}: {package.description}")
         print()
         
         # Confirmation prompt
         if not self.force and not self.dry_run:
-            response = input("Proceed with installation? (y/N): ")
+            response = input("Proceed with optional package installation? (y/N): ")
             if response.lower() != 'y':
                 print(self._color("Installation cancelled", 'yellow'))
                 return False
         
         # Install packages
-        print(self._color("Installing packages...", 'blue'))
+        print(self._color("Installing optional packages...", 'blue'))
         print()
         
         failed_packages = []
@@ -278,8 +505,8 @@ class CLIToolsInstaller:
             print()
         
         # Final summary
-        print(self._color("Installation Summary:", 'blue'))
-        print(f"  Total packages: {len(self.PACKAGES)}")
+        print(self._color("Optional Package Installation Summary:", 'blue'))
+        print(f"  Total optional packages: {len(self.OPTIONAL_PACKAGES)}")
         print(f"  Already installed: {len(already_installed)}")
         print(f"  Newly installed: {len(packages_to_install) - len(failed_packages)}")
         
@@ -288,27 +515,8 @@ class CLIToolsInstaller:
             print(f"    Failed packages: {', '.join(failed_packages)}")
             return False
         else:
-            print(f"  {self._color('✓ All installations successful!', 'green')}")
+            print(f"  {self._color('✓ All optional installations successful!', 'green')}")
             return True
-    
-    def install_specific(self, package_name: str) -> bool:
-        """Install a specific package by name."""
-        for package in self.PACKAGES:
-            if package.name == package_name:
-                print(f"{self._color(f'Installing specific package: {package.name}', 'blue')}")
-                print()
-                
-                if self._is_package_installed(package):
-                    print(self._color(f"✓ {package.name} is already installed", 'green'))
-                    return True
-                
-                return self.install_package(package)
-        
-        print(self._color(f"Error: Package '{package_name}' not found in package list", 'red'))
-        print("Available packages:")
-        for package in self.PACKAGES:
-            print(f"  - {package.name}")
-        return False
     
     def rollback(self) -> bool:
         """Rollback the last installation (uninstall recently installed packages)."""
@@ -391,16 +599,26 @@ def main():
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 EXAMPLES:
-    uv run scripts/install-cli-tools.py              # Install all packages interactively
-    uv run scripts/install-cli-tools.py --dry-run    # Preview what would be installed
-    uv run scripts/install-cli-tools.py --install jq # Install only jq
-    uv run scripts/install-cli-tools.py --rollback   # Undo last installation session
-    uv run scripts/install-cli-tools.py --force      # Install all without confirmation
+    uv run scripts/install-cli-tools.py                       # Install core packages + prompt for optionals
+    uv run scripts/install-cli-tools.py --optionals          # Install all optional packages interactively  
+    uv run scripts/install-cli-tools.py --dry-run            # Preview what would be installed
+    uv run scripts/install-cli-tools.py --list               # List all packages (core and optional)
+    uv run scripts/install-cli-tools.py --list-optionals     # List only optional packages
+    uv run scripts/install-cli-tools.py --install jq         # Install only jq (core package)
+    uv run scripts/install-cli-tools.py --install-optional onedrive-abraunegg  # Install OneDrive
+    uv run scripts/install-cli-tools.py --rollback           # Undo last installation session
+    uv run scripts/install-cli-tools.py --force              # Install all without confirmation
 
 EXTENDING:
-    To add new packages, edit the PACKAGES list in this script:
+    To add new core packages, edit the PACKAGES list:
     PACKAGES = [
         Package("new-package", "Description of the package"),
+        ...
+    ]
+    
+    To add new optional packages, edit the OPTIONAL_PACKAGES list:
+    OPTIONAL_PACKAGES = [
+        Package("new-optional", "Description of the optional package"),
         ...
     ]
         """
@@ -409,9 +627,15 @@ EXTENDING:
     parser.add_argument('--dry-run', action='store_true',
                         help='Show what would be installed without installing')
     parser.add_argument('--list', action='store_true',
-                        help='List all available packages')
+                        help='List all available packages (both core and optional)')
+    parser.add_argument('--list-optionals', action='store_true',
+                        help='List only optional packages')
     parser.add_argument('--install', metavar='PACKAGE',
-                        help='Install specific package only')
+                        help='Install specific core package only')
+    parser.add_argument('--install-optional', metavar='PACKAGE',
+                        help='Install specific optional package only')
+    parser.add_argument('--optionals', action='store_true',
+                        help='Install all optional packages')
     parser.add_argument('--force', action='store_true',
                         help='Skip confirmation prompts')
     parser.add_argument('--rollback', action='store_true',
@@ -435,11 +659,20 @@ EXTENDING:
     if args.list:
         installer.list_packages()
         return 0
+    elif args.list_optionals:
+        installer.list_packages(optionals_only=True)
+        return 0
     elif args.rollback:
         success = installer.rollback()
         return 0 if success else 1
     elif args.install:
         success = installer.install_specific(args.install)
+        return 0 if success else 1
+    elif args.install_optional:
+        success = installer.install_specific_optional(args.install_optional)
+        return 0 if success else 1
+    elif args.optionals:
+        success = installer.install_optionals()
         return 0 if success else 1
     else:
         success = installer.install_all()

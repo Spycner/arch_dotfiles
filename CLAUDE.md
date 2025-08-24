@@ -31,7 +31,7 @@ arch_dotfiles/
 │   ├── setup_hyprland.py             # Hyprland setup with backup/rollback
 │   ├── setup-claude.py               # Claude Code configuration setup
 │   ├── setup-theming.py              # Theming packages installer
-│   ├── setup-rosepine.py             # Rosé Pine theme configuration
+│   ├── setup-fuzzel.py               # Fuzzel launcher setup with Catppuccin Latte theme
 │   ├── setup-utils.py                # Utilities setup script
 │   ├── setup-input.sh                # Input configuration script
 │   ├── install-cli-tools.py          # CLI tools installer
@@ -90,11 +90,10 @@ nwg-look          # GTK settings for Wayland
 qt5ct             # Qt5 theme configuration
 kvantummanager    # Advanced Qt theming
 
-# Rosé Pine theme setup (complete configuration)
-uv run scripts/setup-rosepine.py              # Main variant (dark)
-uv run scripts/setup-rosepine.py --variant dawn  # Dawn variant (light)
-uv run scripts/setup-rosepine.py --variant moon  # Moon variant (darker)
-uv run scripts/setup-rosepine.py --rollback   # Revert to previous theme
+# Fuzzel launcher setup (Wayland-native app launcher)
+uv run scripts/setup-fuzzel.py               # Install and configure with Catppuccin Latte theme
+uv run scripts/setup-fuzzel.py --dry-run     # Preview changes without applying
+uv run scripts/setup-fuzzel.py --rollback    # Revert to previous launcher setup
 ```
 
 ### Task Master Workflow
@@ -175,6 +174,14 @@ claude --help
 - **Icon and cursor themes**: Papirus, Numix, Bibata, and other popular icon/cursor sets
 - **Font packages**: Comprehensive font collection including Nerd Fonts, Roboto, Fira Code
 - **Environment template**: Auto-generates env.conf template for Hyprland theme variables
+
+### Fuzzel App Launcher
+- **Wayland-native launcher**: Modern application launcher optimized for Hyprland and wlroots compositors
+- **Catppuccin Latte theming**: Light, elegant color scheme with background `#eff1f5`, text `#4c4f69`, and blue accents
+- **Complete automation**: Python setup script handles installation, configuration, and Hyprland integration at scripts/setup-fuzzel.py
+- **Dual keybinds**: Super+Space (primary) and Super+R (alternative) for quick launcher access
+- **Backup and rollback**: Full state tracking with timestamped backups for safe configuration changes
+- **dmenu compatibility**: Supports script integration with dmenu-compatible interface
 
 ### Claude Code Configuration
 - **Project-specific agents**: Version-controlled AI agents in `.claude/agents/` for team sharing at .claude/agents/README.md

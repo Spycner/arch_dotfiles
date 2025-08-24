@@ -50,7 +50,8 @@ class HyprlandSetup:
         self.link_map = {
             'hyprland.conf': self.repo_root / 'config' / 'hypr' / 'hyprland.conf',
             'conf.d': self.repo_root / 'config' / 'hypr' / 'conf.d',
-            'scripts': self.repo_root / 'config' / 'hypr' / 'scripts'
+            'scripts': self.repo_root / 'config' / 'hypr' / 'scripts',
+            'frappe.conf': self.repo_root / 'config' / 'hypr' / 'frappe.conf'
         }
     
     def print_colored(self, message: str, color: str = Colors.WHITE, bold: bool = False) -> None:
@@ -118,9 +119,11 @@ class HyprlandSetup:
             target_path = self.config_dir / name
             
             # Remove existing file/directory if it exists
-            if target_path.exists():
+            if target_path.exists() or target_path.is_symlink():
                 if not self.dry_run:
-                    if target_path.is_dir():
+                    if target_path.is_symlink():
+                        target_path.unlink()
+                    elif target_path.is_dir():
                         shutil.rmtree(target_path)
                     else:
                         target_path.unlink()

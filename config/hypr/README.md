@@ -224,7 +224,7 @@ This configuration is designed to integrate with the broader Arch dotfiles repos
 - **Python 3.8+**: For the setup script (managed by uv)
 - **jq**: For JSON parsing in some scripts (optional)
 - **kitty**: Default terminal (configurable)
-- **wofi**: Default application launcher (configurable)
+- **fuzzel**: Default application launcher with Catppuccin Latte theme (configurable)
 - **dolphin**: Default file manager (configurable)
 
 ## Contributing

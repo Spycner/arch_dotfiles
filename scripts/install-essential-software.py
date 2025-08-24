@@ -42,6 +42,9 @@ class EssentialSoftwareInstaller:
         # AUR packages
         self.aur_packages = [
             "vivaldi",  # Vivaldi browser
+            "qt5-wayland", # Required by wayland
+            "qt6-wayland", # Also required by wayland
+            "obsidian-bin", # Notetaking
         ]
     
     def ensure_directories(self):
